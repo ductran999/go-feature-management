@@ -4,12 +4,15 @@ import (
 	"context"
 	httpAdapter "feature-flag-poc/internal/adapter/http"
 	adapterPostgres "feature-flag-poc/internal/adapter/postgresql"
+	adapterUnleash "feature-flag-poc/internal/adapter/unleash"
 	"feature-flag-poc/internal/application/usecase"
 	"feature-flag-poc/internal/config"
 	"feature-flag-poc/internal/db/generated"
 	"feature-flag-poc/internal/infra/db/postgresql"
 	httpserver "feature-flag-poc/internal/server/http"
 	"log"
+
+	"github.com/Unleash/unleash-go-sdk/v5"
 )
 
 func Run() {
@@ -20,6 +23,18 @@ func Run() {
 	if err != nil {
 		log.Fatalln("failed to load config", err)
 	}
+	log.Println("[INFO] load config env successfully!")
+
+	// init unleash
+	if err := initUnleash(unleashConfig{
+		AppName:    cfg.App.Name,
+		BackendUrl: cfg.Unleash.BackendUrl,
+		Token:      cfg.Unleash.Token,
+		Env:        cfg.App.Environment,
+	}); err != nil {
+		log.Fatalln("failed to init unleash")
+	}
+	log.Println("[INFO] connect unleash successfully!")
 
 	//  Init DB
 	pool, err := postgresql.New(ctx, postgresql.Config{
@@ -33,12 +48,14 @@ func Run() {
 	if err != nil {
 		log.Fatalln("failed to connect db", err)
 	}
+	log.Println("[INFO] connect db successfully!")
 
+	featureFlags := adapterUnleash.NewUnleashFeatureFlag()
 	queries := generated.New(pool)
 	repo := adapterPostgres.NewTodoRepository(queries)
 
 	// usecase
-	uc := usecase.NewListTodoUsecase(repo)
+	uc := usecase.NewListTodoUsecase(featureFlags, repo)
 
 	// http adapter
 	handler := httpAdapter.NewTodoHandler(uc)
@@ -50,4 +67,7 @@ func Run() {
 	go server.Run()
 	waitForShutdown()
 	server.Shutdown(context.Background())
+	if err := unleash.Close(); err != nil {
+		log.Println("[WARN] got error when close unleash")
+	}
 }

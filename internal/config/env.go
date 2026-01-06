@@ -1,8 +1,14 @@
 package config
 
 type EnvConfig struct {
-	Environment string           `mapstructure:"environment"`
-	DB          PostgreSQLConfig `mapstructure:"db"`
+	App     App              `mapstructure:"app"`
+	DB      PostgreSQLConfig `mapstructure:"db"`
+	Unleash Unleash          `mapstructure:"unleash"`
+}
+
+type App struct {
+	Environment string `mapstructure:"environment"`
+	Name        string `mapstructure:"name"`
 }
 
 type PostgreSQLConfig struct {
@@ -11,4 +17,9 @@ type PostgreSQLConfig struct {
 	User    string `mapstructure:"user"`
 	Pass    string `mapstructure:"pass"`
 	DatName string `mapstructure:"dat_name"`
+}
+
+type Unleash struct {
+	Token      string `mapstructure:"token"`
+	BackendUrl string `mapstructure:"backend_url"`
 }

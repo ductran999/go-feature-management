@@ -1,4 +1,6 @@
-environment: "dev"
+app:
+  environment: "dev"
+  name: "todo-app"
 
 db:
   host: localhost
@@ -6,3 +8,7 @@ db:
   user: test
   pass: test
   dat_name: example
+
+unleash:
+  backend_url: "http://localhost:4242/api"
+  token: ""
