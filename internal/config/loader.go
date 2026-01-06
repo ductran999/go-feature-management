@@ -10,7 +10,9 @@ import (
 
 const configPath = "./configs/config.yml"
 
-func LoadEnv() error {
+func LoadEnv() (*EnvConfig, error) {
+	var env EnvConfig
+
 	viper.SetConfigFile(configPath)
 	viper.SetConfigType("yaml")
 
@@ -22,11 +24,11 @@ func LoadEnv() error {
 		autoBindEnv(viper.GetViper(), EnvConfig{})
 	}
 
-	if err := viper.Unmarshal(&Env); err != nil {
-		return err
+	if err := viper.Unmarshal(&env); err != nil {
+		return nil, err
 	}
 
-	return nil
+	return &env, nil
 }
 
 func autoBindEnv(v *viper.Viper, s any) {

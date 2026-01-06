@@ -5,3 +5,4 @@ db:
   port: 5432
   user: test
   pass: test
+  dat_name: example

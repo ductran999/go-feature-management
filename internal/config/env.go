@@ -1,15 +1,14 @@
 package config
 
-var Env EnvConfig
-
 type EnvConfig struct {
 	Environment string           `mapstructure:"environment"`
-	DBConfig    PostgreSQLConfig `mapstructure:"db"`
+	DB          PostgreSQLConfig `mapstructure:"db"`
 }
 
 type PostgreSQLConfig struct {
-	Host string `mapstructure:"host"`
-	Port string `mapstructure:"port"`
-	User string `mapstructure:"user"`
-	Pass string `mapstructure:"pass"`
+	Host    string `mapstructure:"host"`
+	Port    int    `mapstructure:"port"`
+	User    string `mapstructure:"user"`
+	Pass    string `mapstructure:"pass"`
+	DatName string `mapstructure:"dat_name"`
 }

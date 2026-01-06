@@ -1,15 +1,9 @@
 package main
 
 import (
-	"feature-flag-poc/internal/config"
-	"fmt"
-	"log"
+	bootstrap "feature-flag-poc/internal/bootstrap"
 )
 
 func main() {
-	if err := config.LoadEnv(); err != nil {
-		log.Fatalln("failed to load config", err)
-	}
-
-	fmt.Println(config.Env)
+	bootstrap.Run()
 }
