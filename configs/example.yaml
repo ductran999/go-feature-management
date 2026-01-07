@@ -1,5 +1,5 @@
 app:
-  environment: "dev"
+  environment: "development"
   name: "todo-app"
 
 db:
@@ -9,6 +9,8 @@ db:
   pass: test
   dat_name: example
 
+# config unleash follow the official document: 
+# https://docs.getunleash.io/sdks/go
 unleash:
   backend_url: "http://localhost:4242/api"
   token: ""
