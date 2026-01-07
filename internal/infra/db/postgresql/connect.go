@@ -3,6 +3,8 @@ package postgresql
 import (
 	"context"
 	"fmt"
+	"net"
+	"strconv"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -18,12 +20,13 @@ type Config struct {
 }
 
 func New(ctx context.Context, cfg Config) (*pgxpool.Pool, error) {
+	address := net.JoinHostPort(cfg.Host, strconv.Itoa(cfg.Port))
+
 	dsn := fmt.Sprintf(
-		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
+		"postgres://%s:%s@%s/%s?sslmode=%s",
 		cfg.User,
 		cfg.Password,
-		cfg.Host,
-		cfg.Port,
+		address,
 		cfg.DBName,
 		cfg.SSLMode,
 	)
