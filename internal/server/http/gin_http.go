@@ -13,8 +13,9 @@ type Server struct {
 func New(handler http.Handler, addr string) *Server {
 	return &Server{
 		srv: &http.Server{
-			Addr:    addr,
-			Handler: handler,
+			Addr:              addr,
+			Handler:           handler,
+			ReadHeaderTimeout: time.Second * 10,
 		},
 	}
 }
