@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+      PGDATA: /data/postgres
+    env_file:
+      - .env
+    volumes:
+      - .docker/pg-data:/data/postgres
+    ports:
+      - "127.0.0.1:${DB_PORT}:5432"
+    networks:
+      - localnet
+    restart: unless-stopped
+    # Check DB health
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+networks:
+  localnet:
+    driver: bridge

@@ -1,0 +1,16 @@
+app:
+  environment: "development"
+  name: "todo-app"
+
+db:
+  host: localhost
+  port: 5432
+  user: test
+  pass: test
+  dat_name: example
+
+# config unleash follow the official document: 
+# https://docs.getunleash.io/sdks/go
+unleash:
+  backend_url: "http://localhost:4242/api"
+  token: ""
