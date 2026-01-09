@@ -20,14 +20,23 @@ lint: ## Run linters
 	golangci-lint run --timeout 10m --config .golangci.yml
 
 .PHONY: setup
-setup: ## Setup demo dependencies
+init-project: ## Setup demo dependencies
 	@if [ ! -f .env ]; then \
 		cp .env.example .env; \
 		echo "Copied .env.example → .env"; \
 	else \
 		echo ".env already exists, skipping copy."; \
 	fi
-	docker-compose up -d
+	@if [ ! -f ./configs/config.yml ]; then \
+		cp ./configs/example.yml ./configs/config.yml; \
+		echo "Copied ./configs/example.yml → ./configs/config.yml"; \
+	else \
+		echo "./configs/config.yml already exists, skipping copy."; \
+	fi
+
+.PHONE: setup
+setup: ## Make setup 
+	@docker compose up -d
 
 .PHONY: cleanup
 cleanup: ## Cleanup demo
@@ -43,3 +52,7 @@ migrate: ## migrate database schema
 	-path migrations \
   	-database "postgres://${DB_USERNAME}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_DATABASE}?sslmode=disable" \
   	up
+
+.PHONY: run
+run: ## run demo
+	go run ./cmd/main.go
