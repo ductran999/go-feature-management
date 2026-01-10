@@ -1,5 +1,5 @@
-include .env
-export
+-include .env
+export $(shell sed 's/=.*//' .env 2>/dev/null)
 
 default: help
 
@@ -19,24 +19,35 @@ tidy: ## Tidy up the go.mod
 lint: ## Run linters
 	golangci-lint run --timeout 10m --config .golangci.yml
 
+.PHONY: 
+build: ## Build image
+	@docker build -t ducnta99/go-feature-flags:${APP_VERSION} .
+
 .PHONY: setup
-init-project: ## Setup demo dependencies
+setup: ## Make setup
 	@if [ ! -f .env ]; then \
 		cp .env.example .env; \
-		echo "Copied .env.example → .env"; \
+		echo "Copied .env.example -> .env"; \
 	else \
 		echo ".env already exists, skipping copy."; \
 	fi
-	@if [ ! -f ./configs/config.yml ]; then \
-		cp ./configs/example.yml ./configs/config.yml; \
-		echo "Copied ./configs/example.yml → ./configs/config.yml"; \
+
+	@if [ ! -f ./configs/dev/config.yml ]; then \
+		cp ./configs/dev/example.yml ./configs/dev/config.yml; \
+		echo "Copied ./configs/dev/example.yml -> ./configs/dev/config.yml"; \
 	else \
-		echo "./configs/config.yml already exists, skipping copy."; \
+		echo "./configs/dev/config.yml already exists, skipping copy."; \
 	fi
 
-.PHONE: setup
-setup: ## Make setup 
+	@if [ ! -f ./configs/prod/config.yml ]; then \
+		cp ./configs/prod/example.yml ./configs/prod/config.yml; \
+		echo "Copied ./configs/prod/example.yml -> ./configs/prod/config.yml"; \
+	else \
+		echo "./configs/prod/config.yml already exists, skipping copy."; \
+	fi
+
 	@docker compose up -d
+
 
 .PHONY: cleanup
 cleanup: ## Cleanup demo
