@@ -23,8 +23,8 @@ lint: ## Run linters
 build: ## Build image
 	@docker build -t ducnta99/go-feature-flags:${APP_VERSION} .
 
-.PHONY: setup
-setup: ## Make setup
+.PHONY: demo
+demo: ## Start demo
 	@if [ ! -f .env ]; then \
 		cp .env.example .env; \
 		echo "Copied .env.example -> .env"; \
@@ -56,14 +56,3 @@ cleanup: ## Cleanup demo
 .PHONY: sqlc-gen
 sqlc-gen: ## generate code
 	@sqlc generate -f ./internal/db/sqlc.yaml
-
-.PHONY: migrate
-migrate: ## migrate database schema
-	migrate \
-	-path migrations \
-  	-database "postgres://${DB_USERNAME}:${DB_PASSWORD}@localhost:${DB_PORT}/${DB_DATABASE}?sslmode=disable" \
-  	up
-
-.PHONY: run
-run: ## run demo
-	go run ./cmd/main.go

@@ -1,7 +1,9 @@
 package http
 
 import (
+	"errors"
 	"feature-flag-poc/internal/application/port"
+	"feature-flag-poc/internal/application/usecase"
 	"net/http"
 	"time"
 
@@ -37,6 +39,14 @@ func (hdl *todoHandler) HealthCheck(c *gin.Context) {
 func (hdl *todoHandler) ListTodos(c *gin.Context) {
 	todos, err := hdl.listTotoUsecase.Execute(c.Request.Context())
 	if err != nil {
+		if errors.Is(err, usecase.ErrFeatureIsDisabled) {
+			c.JSON(http.StatusGone, gin.H{
+				"code":    "GONE",
+				"message": err.Error(),
+			})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code":    "INTERNAL_SERVER_ERROR",
 			"message": err.Error(),
