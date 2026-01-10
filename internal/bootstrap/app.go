@@ -109,7 +109,8 @@ func Run() error {
 	router := httpAdapter.NewRouter(handler)
 
 	// server
-	app.server = httpserver.New(router, ":8080")
+	app.server = httpserver.New(router, ":9420")
+	log.Printf("[INFO] service_name: %s | service_version: %s | service_env: %s", cfg.App.Name, cfg.App.Version, cfg.App.Environment)
 
 	errChan := make(chan error, 1)
 	go func() {
