@@ -1,6 +1,6 @@
-# go-feature-management
+# xplr-feature-flags
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/ductran999/go-feature-management)](https://goreportcard.com/report/github.com/ductran999/go-feature-management)
+[![Go Report Card](https://goreportcard.com/badge/github.com/ductran999/xplr-feature-flags)](https://goreportcard.com/report/github.com/ductran999/xplr-feature-flags)
 [![Go](https://img.shields.io/badge/Go-1.25.1-blue?logo=go)](https://golang.org)
 [![License](https://img.shields.io/github/license/ductran999/dbkit)](LICENSE)
 
@@ -32,8 +32,8 @@ This project is not production-ready. Its goal is to understand how Unleash work
 
 ### 1. Clone project
 ```bash
-git clone https://github.com/ductran999/go-feature-management.git
-cd go-feature-management
+git clone https://github.com/ductran999/xplr-feature-flags.git
+cd xplr-feature-flags
 ```
 
 ### 2. Start demo
