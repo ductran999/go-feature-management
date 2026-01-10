@@ -9,6 +9,7 @@ type EnvConfig struct {
 type App struct {
 	Environment string `mapstructure:"environment"`
 	Name        string `mapstructure:"name"`
+	Version     string `mapstructure:"version"`
 }
 
 type PostgreSQLConfig struct {

@@ -30,41 +30,20 @@ This project is not production-ready. Its goal is to understand how Unleash work
 
 ## 🚀 Getting Started
 
-### 1. Run Unleash (Local): see at [Official Document](https://github.com/Unleash/unleash)
-```sh
-git clone git@github.com:Unleash/unleash.git
-cd unleash
-docker compose up -d
+### 1. Clone project
+```bash
+git clone https://github.com/ductran999/go-feature-management.git
+cd go-feature-management
+```
+
+### 2. Start demo
+```bash
+make demo
 ```
 
 Unleash UI: http://localhost:4242 (Default credentials: admin / unleash4all)
 
-### 2. Install Dependencies
-```bash
-go mod tidy
-```
-
-### 4. Create env file
-```
-make init project
-``` 
-This will spawn 2 file `.env` and `./configs/config.yml`. Fill yours config. 
-
-- `.env`: contains env for docker compose setup db
-- `./configs/config.yml`: app configs
-
-### 4. Set up local app
-```bash
-make setup
-```
-
-### 5. Migrate db schemas
-I'm using [migrate](https://github.com/golang-migrate/migrate). You can simply connect to db and load the `.sql` file.
-```bash
-make migrate
-```
-
-### 6. Config flag
+### 3. Config flag
 ```go
 // internal/application/usecase/list_todos_usecase.go
 func (uc *listTodoUsecase) Execute(ctx context.Context) ([]domain.Todo, error) {
@@ -82,10 +61,12 @@ func (uc *listTodoUsecase) Execute(ctx context.Context) ([]domain.Todo, error) {
 }
 ```
 
-Create a flag: `todos.enable_list_all` and disable it in development
+Create a flag: `todos.enable_list_all` and disable it production
 ![alt text](./assets/flags.png)
 
-### 7. Result
+### Result
+
+curl production
 
 ```bash
 curl --location 'localhost:8080/todos'
@@ -94,8 +75,51 @@ curl --location 'localhost:8080/todos'
 output:
 ```json
 {
-    "code": "INTERNAL_SERVER_ERROR",
+    "code": "GONE",
     "message": "feature is disabled"
+}
+```
+
+curl dev
+
+```bash
+curl --location 'localhost:8081/todos'
+```
+
+output:
+```json
+{
+  "data": [
+    {
+      "ID": 1,
+      "Title": "Learn Unleash feature flags",
+      "Status": "pending",
+      "CreatedAt": "2026-01-10T13:59:27.20761Z",
+      "UpdatedAt": "2026-01-10T13:59:27.20761Z"
+    },
+    {
+      "ID": 2,
+      "Title": "Build todo API",
+      "Status": "in_progress",
+      "CreatedAt": "2026-01-10T13:59:27.20761Z",
+      "UpdatedAt": "2026-01-10T13:59:27.20761Z"
+    },
+    {
+      "ID": 3,
+      "Title": "Refactor initUnleash function",
+      "Status": "in_progress",
+      "CreatedAt": "2026-01-10T13:59:27.20761Z",
+      "UpdatedAt": "2026-01-10T13:59:27.20761Z"
+    },
+    {
+      "ID": 4,
+      "Title": "Write README for PoC",
+      "Status": "done",
+      "CreatedAt": "2026-01-10T13:59:27.20761Z",
+      "UpdatedAt": "2026-01-10T13:59:27.20761Z"
+    }
+  ],
+  "message": "retrieve list todos successfully!"
 }
 ```
 

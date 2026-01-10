@@ -13,19 +13,25 @@ type unleashConfig struct {
 	Env        string
 }
 
-func initUnleash(config unleashConfig) error {
-	err := unleash.Initialize(
-		unleash.WithListener(&unleash.DebugListener{}),
-		unleash.WithEnvironment(config.Env),
-		unleash.WithAppName(config.AppName),
-		unleash.WithUrl(config.BackendUrl),
-		unleash.WithCustomHeaders(http.Header{"Authorization": {config.Token}}),
-	)
-	if err != nil {
+func initUnleash(cfg unleashConfig) error {
+	opts := []unleash.ConfigOption{
+		unleash.WithEnvironment(cfg.Env),
+		unleash.WithAppName(cfg.AppName),
+		unleash.WithUrl(cfg.BackendUrl),
+		unleash.WithCustomHeaders(http.Header{
+			"Authorization": []string{cfg.Token},
+		}),
+	}
+
+	if cfg.Env != "production" {
+		opts = append(opts, unleash.WithListener(&unleash.DebugListener{}))
+	}
+
+	if err := unleash.Initialize(opts...); err != nil {
 		return err
 	}
 
-	// Note this will block until the default client is ready
+	// Block until the default client is ready
 	unleash.WaitForReady()
 
 	return nil
